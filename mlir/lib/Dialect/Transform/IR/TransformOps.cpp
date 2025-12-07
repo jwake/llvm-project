@@ -836,6 +836,9 @@ transform::ApplyRegisteredPassOp::apply(transform::TransformRewriter &rewriter,
 
   // Create pass manager and add the pass or pass pipeline.
   PassManager pm(getContext());
+  if (failed(mlir::applyPassManagerCLOptions(pm))) {
+    return emitDefiniteFailure() << "failed to apply command line options to the pass manager";
+  }
   if (failed(info->addToPipeline(pm, options, [&](const Twine &msg) {
         emitError(msg);
         return failure();
